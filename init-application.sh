@@ -2,43 +2,75 @@
 
 # brew core below
 local runtime_environment=(
-    python  ipython
+    gcc
+    glib
+    python
+    ipython
     node
+    openssl
 )
 
 local sys_pref_tool=(
-    mas duti  ncdu
-    mackup  pandoc
+    htop
+    duti
+    tree
+    ncdu
     unrar
+    pandoc
+    mas
+    mackup
+    coreutils
+    ffmpeg
 )
 
 local terminal_tool=(
-    zsh     gnu-sed
-    tmux    screen
+    screen
+    tmux
+    gnu-sed
     terminal-notifier
-    md5sha1sum  autojump
+    source-highlight
+    md5sha1sum
+    autojump
+    colordiff
+    expect
+    zsh
+    asciinema
+    ranger
+    tig
 )
 
 local network_tool=(
-    git curl wget aria2
+    git
+    curl
+    wget
+    aria2
     proxychains-ng
     lrzsz
+    nginx
+    telnet
+    mosh
+    httpie
 )
 
 local database_service=(
-    mysql   mongodb redis
+    mysql
+    mongodb
+    redis
 )
 
 
 # brew cask below
 local terminal_app=(
-    iterm2  hyper
+    iterm2
 )
 
 local network_app=(
     shadowsocksx-ng
-    google-chrome   telegram
-    teamviewer  paw
+    google-chrome
+    telegram
+    teamviewer
+    paw
+    wireshark
 )
 
 local databse_manager=(
@@ -47,23 +79,30 @@ local databse_manager=(
 )
 
 local editor_IDE_app=(
-    typora  visual-studio-code
-    webstorm    pycharm
+    typora
+    visual-studio-code
+    webstorm
+    pycharm
+    datagrip
 )
 
 local version_control_app=(
-    sourcetree  tower
+    sourcetree
 )
 
 local dev_utils_app=(
-    dash    docker
+    docker
     kitematic
 )
 
 local system_helper_service_app=(
     scroll-reverser
-    alfred  istat-menus
+    alfred
     dropbox
+    intel-power-gadget
+    istat-menus
+    keycastr
+    keyboard-maestro
 )
 
 local quicklook_plugins=(
@@ -78,7 +117,9 @@ local quicklook_plugins=(
 )
 
 local media_entertainment_app=(
-    neteasemusic    iina
+    neteasemusic
+    iina
+    boom-3d
 )
 
 local office_app=(
@@ -88,8 +129,8 @@ local office_app=(
 
 local adobe=(
     adobe-creative-cloud
-    # adobe-photoshop-cc
-    clip-studio-paint
+    sketch
+    # clip-studio-paint
 )
 
 local gaming=(
@@ -100,10 +141,14 @@ local mas_only_app=(
     441258766   # Magnet
     1176895641  # Spark
     836500024   # WeChat
-    1189898970  # WeChat Work
+    # 1189898970  # WeChat Work
+    # 1449412482  # Reeder 4
 )
 
-brew install --with-default-names ${runtime_environment[@]} ${sys_pref_tool[@]} \
+brew install ${runtime_environment[@]} ${sys_pref_tool[@]} \
+    ${terminal_tools[@]} ${network_tool[@]} ${database_service[@]}
+
+brew link --overwrite ${runtime_environment[@]} ${sys_pref_tool[@]} \
     ${terminal_tools[@]} ${network_tool[@]} ${database_service[@]}
 
 brew cask install ${databse_manager[@]} ${terminal_app[@]} ${network_app[@]} ${editor_IDE_app[@]} \

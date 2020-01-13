@@ -1,15 +1,23 @@
 #!/usr/bin/env bash
 # Integrity Verifier
 
-local PROJECT_NAME="init-macOS-dev"
-local HASH_FILE="md5sum.txt"
-local SOURCE_URL="https://github.com/zthxxx/${PROJECT_NAME}/raw/master/"
+# build md5sum.txt steps
+#
+# with md5sha1sum lib:
+# md5sum *.sh *.template app-preferences/* > md5sum.txt
+#
+# or with built-in md5
+# md5 -r *.sh *.template app-preferences/* > md5sum.txt
+
+PROJECT_NAME="init-macOS-dev"
+HASH_FILE="md5sum.txt"
+SOURCE_URL="https://github.com/zthxxx/${PROJECT_NAME}/raw/master/"
 
 is_command() { command -v $@ &> /dev/null; }
 
 download() {
   local file="$1"
-  if ! curl -sSL "${SOURCE_URL}${file}" -o "$file" --create-dirs; then
+  if ! curl -sSL -H 'Cache-Control: no-cache' "${SOURCE_URL}${file}" -o "$file" --create-dirs; then
     exit 1
   fi
 }
@@ -56,8 +64,11 @@ download_files() {
 }
 
 verify() {
-  if is_command git; then 
-    git clone "https://github.com/zthxxx/${PROJECT_NAME}.git"
+  if is_command git; then
+    # macOS Mojave and above need `command line tools` for git
+    xcode-select --install
+    rm -rf "${PROJECT_NAME}"
+    git clone "https://github.com/zthxxx/${PROJECT_NAME}.git" || exit 1
     cd "$PROJECT_NAME"
   else
     mkdir "$PROJECT_NAME"
@@ -70,4 +81,9 @@ verify
 
 MAIN="init.sh"
 chmod +x "$MAIN"
-eval "./${MAIN}" "$@"
+
+sudo perl -i -pe "s/^Defaults\tenv_reset.*/Defaults\tenv_reset, timestamp_timeout=-1/" /etc/sudoers
+
+sudo -i sudo -u $USER -i "`pwd`/${MAIN}" "`pwd`"
+
+sudo perl -i -pe "s/^Defaults\tenv_reset.*/Defaults\tenv_reset, timestamp_timeout=60/" /etc/sudoers

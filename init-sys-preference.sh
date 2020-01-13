@@ -2,9 +2,25 @@
 
 . ./template-render.sh
 
+# disable `Last login` message from iTerm
+# https://ashokgelal.com/2017/01/04/til-iterm-hush-last-login/
+touch ~/.hushlogin
+
 # sync docs with iCloud and Dropbox
+sudo rm -rf ~/Documents
 ln -f -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents ~/Documents
 ln -f -s ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents ~/Dropbox/Documents
+
+# ssh config
+mkdir -p ~/.ssh/sockets/
+cp ./app-preferences/ssh.conf.template  ~/.ssh/config
+cp ~/Documents/Temporary/ssh-config/*  ~/.ssh/
+chmod 400 ~/.ssh/*_rsa
+chmod 400 ~/.ssh/*.pub
+
+# link airport
+# http://osxdaily.com/2007/01/18/airport-the-little-known-command-line-wireless-utility/
+ln -f -s /System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport /usr/local/bin/airport
 
 preference.dock() {
     # ref: https://sspai.com/post/33493
@@ -35,6 +51,7 @@ specific_UTIs_for_app() {
     local UTI_IINA=`osascript -e 'id of app "IINA"'`
     local UTI_Chrome=`osascript -e 'id of app "Google Chrome"'`
     local UTI_Spark=`osascript -e 'id of app "Spark"'`
+    local UTI_Iterm2=`osascript -e 'id of app "Iterm2"'`
 
     tmplt.render "$UTIs_setting_file"
     duti "$UTIs_setting_file"
